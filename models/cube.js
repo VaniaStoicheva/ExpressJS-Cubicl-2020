@@ -24,6 +24,10 @@
             type: 'ObjectId',
             ref: 'Accessory'
           }],
+          creatorId:{
+            type:'ObjectId',
+              ref:'User'
+          }
       })
       CubeSchema.path('imageUrl').validate(function(url){
         return url.startsWith('http://') || url.startsWith('https://')

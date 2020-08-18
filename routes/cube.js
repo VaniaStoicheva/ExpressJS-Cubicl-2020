@@ -1,6 +1,10 @@
-const express=require('express')
+const env=process.env.NODE_ENV || 'development'
 
+const express=require('express')
 const router=express.Router()
+const jwt=require('jsonwebtoken')
+const config=require('../config/config')[env]
+const Cube=require('../models/cube')
 
 router.get('/edit',(req,res)=>{
     res.render('editCubePage')
@@ -25,8 +29,12 @@ router.post('/create',(req,res)=>{
         difficulty
     }=req.body
 
+    const token=req.cookies['authid']
+    const decodedObject=jwt.verify(token,config.privateKey)
+    console.log(decodedObject)
+    
     const cube = new Cube({
-        name, description, imageUrl,  difficulty
+        name, description, imageUrl,  difficulty, creatorId:decodedObject.userId
     })
     //console.log(cube)
     cube.save((err)=>{

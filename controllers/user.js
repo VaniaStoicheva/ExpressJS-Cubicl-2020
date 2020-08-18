@@ -1,7 +1,10 @@
+const env=process.env.NODE_ENV || 'development'
+
+
 const User=require('../models/user')
 const bcrypt=require('bcrypt')
 const  jwt  = require('jsonwebtoken')
-const privateKey='PRIVATE-KEY11';
+const config=require('../config/config')[env];
 
 const saveUser=async(req,res)=>{
     const{
@@ -23,7 +26,7 @@ const saveUser=async(req,res)=>{
     const token= jwt.sign({
         userId:userObject._id,
         username:userObject.username
-    }, privateKey)
+    }, config.privateKey)
 
     res.cookie('authid',token)
 
