@@ -1,31 +1,52 @@
 const express = require('express')
-const { saveUser, verifyUser,guestAccess,getUserStatus, checkAuthentication } = require('../controllers/user')
+const { saveUser, verifyUser, guestAccess, getUserStatus } = require('../controllers/user')
+
 const router = express.Router()
-const jwt = require('jsonwebtoken')
 
+router.get('/login', guestAccess, getUserStatus, (req, res) => {
 
-router.get('/login',guestAccess,getUserStatus, (req, res) => {
-    res.render('loginPage',{ isLoggedIn:req.isLoggedIn})
+  res.render('loginPage', {
+    isLoggedIn: req.isLoggedIn
+  })
 })
 
-router.get('/signup',guestAccess,getUserStatus, (req, res) => {
-    res.render('registerPage',{ isLoggedIn:req.isLoggedIn})
+router.get('/signup', guestAccess, getUserStatus, (req, res) => {
+  res.render('registerPage', {
+    isLoggedIn: req.isLoggedIn
+  })
 })
 
-router.post('/signup',checkAuthentication, async (req, res) => {
-    const status = await saveUser(req, res)
-    if (status) {
-        return res.redirect('/')
-    }
-    res.redirect('/')
+router.post('/signup', async (req, res) => {
+  const { password } = req.body
+
+  if (!password || password.length < 8 || !password.match(/^[A-Za-z0-9]+$/)) {
+    return res.render('registerPage', {
+      error: 'Username or password is not valid'
+    })
+  }
+  
+  const { error } = await saveUser(req, res)
+  
+  if (error) {
+    return res.render('registerPage', {
+      error: 'Username or password is not valid'
+    })
+  }
+
+  res.redirect('/')
 })
 
-router.post('/login',checkAuthentication, async (req, res) => {
-    const status = await verifyUser(req, res)
-    if (status) {
-        return res.redirect('/')
-    } 
-    res.redirect('/')
+router.post('/login', async (req, res) => {
+  const { error } = await verifyUser(req, res)
+  
+  if (error) {
+    return res.render('loginPage', {
+      error: 'Username or password is not correct'
+    })
+  }
+
+  res.redirect('/')
 })
+
 
 module.exports = router

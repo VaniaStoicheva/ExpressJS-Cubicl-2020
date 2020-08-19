@@ -27,6 +27,12 @@ router.get('/about', getUserStatus, (req, res) => {
     })
 })
 
+router.get('/logout', (req, res) => {
+    res.clearCookie('authid')
+  
+    res.redirect('/')
+  })
+
 
 module.exports = router
 
