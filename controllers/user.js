@@ -28,11 +28,15 @@ const saveUser = async (req, res) => {
     
     const userObject = await user.save()
     
-    const token = generateToken({ 
+     /* const token = generateToken({ 
       userID: userObject._id,
       username: userObject.username
-    })
-    
+    })  */
+    const token = jwt.sign({
+      userId: userObject._id,
+      username: userObject.username
+  }, config.privateKey) 
+
     res.cookie('authid', token)
     
     return token

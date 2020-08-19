@@ -8,13 +8,56 @@ const Cube=require('../models/cube')
 const {checkAuthentication,getUserStatus}=require('../controllers/user')
 const {getCubeWithAccessories}=require('../controllers/cube')
 
-router.get('/edit',checkAuthentication,getUserStatus,(req,res)=>{
-    res.render('editCubePage',{ isLoggedIn:req.isLoggedIn})
+router.patch('/edit/:id',checkAuthentication,getUserStatus, async (req,res)=>{
+    const {
+        name,
+        description,
+        imageUrl,
+        difficulty
+    }=req.body
+    const id=req.param.id
+
+    const newData={};
+
+    name && (newData.name=name)
+    description && (newData.description=description)
+    difficulty && (newData.difficulty=difficulty)
+    imageUrl && (newData.imageUrl=imageUrl)
+
+    await Cube.findByIdAndUpdate(id,newData)
+
+    res.status(200).json({
+        message:'Update successfully'
+    })
+    res.render('editCubePage',
+    { isLoggedIn:req.isLoggedIn},
+    { message:'Update successfully'}
+    )
 })
 
-router.get('/delete',checkAuthentication,getUserStatus,(req,res)=>{
-    res.render('deleteCubePage',{ isLoggedIn:req.isLoggedIn})
-})
+ router.get('/delete/:id',checkAuthentication,getUserStatus,async(req,res)=>{
+    const id=req.param.id;
+console.log(id)
+    await Cube.findByIdAndDelete(id)
+
+   
+
+  res.status(200).json({
+        message:"Cubes is deleted successfully", 
+    }) 
+   
+    res.redirect('/') 
+}) 
+
+/* router.delete('/delete',async(req,res)=>{
+    const {id}=req.body
+    console.log(id)
+    await Cube.findByIdAndDelete(id)
+
+    res.status(200).json({
+        message:"Cubes is deleted successfully"
+    })
+})  */
 
 router.get('/create',checkAuthentication,getUserStatus,(req,res)=>{
     res.render('create',{

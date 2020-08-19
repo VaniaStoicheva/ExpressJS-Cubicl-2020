@@ -19,14 +19,14 @@ router.get('/signup', guestAccess, getUserStatus, (req, res) => {
 router.post('/signup', async (req, res) => {
   const { password } = req.body
 
-  if (!password || password.length < 8 || !password.match(/^[A-Za-z0-9]+$/)) {
+   if (!password || password.length < 5 || !password.match(/^[A-Za-z0-9]+$/)) {
     return res.render('registerPage', {
       error: 'Username or password is not valid'
     })
-  }
+  } 
   
   const { error } = await saveUser(req, res)
-  
+  console.log(error)
   if (error) {
     return res.render('registerPage', {
       error: 'Username or password is not valid'
