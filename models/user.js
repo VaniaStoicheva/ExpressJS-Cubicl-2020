@@ -5,14 +5,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique:true,
-        minlength:5,
-        match: [/^[A-Za-z0-9]+$/, 'Username is not valid'],
+       minlength:5,
+        match: [/^[A-Za-z0-9]+$/, 'Username is not valid']
     },
     password: {
         type: String,
         required: true,
-        minlength:5,
-        match: [/^[A-Za-z0-9]+$/, 'Password is not valid'],
+         minlength:3,
+         //match: [/^[A-Za-z0-9]+$/, 'Username is not valid']
     }
 
 })
